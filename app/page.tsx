@@ -1,55 +1,50 @@
-import Link from "next/link";
-import { getProducts } from "@/lib/api";
+"use client";
 
-export default async function Home() {
-  const products = await getProducts();
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+};
+
+export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((data: Product[]) => setProducts(data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading)
+    return <div className="container py-10 text-center">Loading...</div>;
 
   return (
-    <div>
-      {/* HERO */}
-      <section className="container py-20 text-center">
-        <h1>Minimal Shopping Experience</h1>
-
-        <p className="text-gray-600 mt-4 max-w-xl mx-auto">
-          Clean design. Fast performance. Built for modern users.
-        </p>
-
-        <Link href="/products" className="btn-primary mt-6 inline-block">
-          Browse Products
-        </Link>
-      </section>
-
-      {/* PRODUCTS */}
-      <section className="container pb-20">
-        <div className="flex justify-between items-center mb-6">
-          <h2>Featured</h2>
-
-          <Link href="/products" className="text-sm text-gray-500">
-            View all →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.slice(0, 12).map((p: any) => (
-            <Link
-              key={p.id}
-              href={`/products/${p.id}`}
-              className="card p-5 group"
-            >
-              <div className="h-40 flex items-center justify-center mb-4">
-                <img
-                  src={p.image}
-                  className="h-full object-contain group-hover:scale-105 transition"
-                />
-              </div>
-
-              <h3 className="line-clamp-2">{p.title}</h3>
-
-              <p className="text-green-600 mt-2 font-semibold">${p.price}</p>
+    <div className="container py-10">
+      <h1 className="text-2xl font-bold text-center mb-6">Products Section</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((p) => (
+          <div
+            key={p.id}
+            className="border p-4 rounded hover:shadow-lg transition text-center"
+          >
+            <Link href={`/products/${p.id}`}>
+              <img
+                src={p.image}
+                alt={p.title}
+                className="h-40 object-contain mb-2 cursor-pointer"
+              />
+              <h3 className="font-medium line-clamp-2 mb-1">{p.title}</h3>
             </Link>
-          ))}
-        </div>
-      </section>
+            <p className="text-green-600 font-semibold mb-2">${p.price}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

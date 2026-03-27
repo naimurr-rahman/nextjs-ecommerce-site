@@ -1,9 +1,7 @@
-"use client"; // ❗ THIS IS CRUCIAL
-
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
-import { CartProvider } from "./context/cartContext";
+import { CartProvider } from "../context/CartContext"; // Correct path
 
 export default function RootLayout({
   children,
@@ -13,7 +11,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        {/* CartProvider wraps all children */}
         <CartProvider>
           <Navbar />
           <main className="flex-grow">{children}</main>

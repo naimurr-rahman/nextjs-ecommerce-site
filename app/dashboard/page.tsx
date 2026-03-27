@@ -1,28 +1,19 @@
-"use client";
+"use client"; // important!
 
-import { getUser, logout } from "@/lib/auth";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const user = getUser();
-  const router = useRouter();
+  const [cart, setCart] = useState<any[]>([]);
 
-  if (!user) {
-    router.push("/login");
-    return <h1>Redirecting...</h1>;
-  }
+  useEffect(() => {
+    const stored = localStorage.getItem("cart");
+    if (stored) setCart(JSON.parse(stored));
+  }, []);
 
   return (
-    <div>
-      <h1>Welcome {user.name}</h1>
-      <button
-        onClick={() => {
-          logout();
-          router.push("/login");
-        }}
-      >
-        Logout
-      </button>
+    <div className="container py-10">
+      <h1>Dashboard</h1>
+      <p>Cart items: {cart.length}</p>
     </div>
   );
 }

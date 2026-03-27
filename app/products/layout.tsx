@@ -1,3 +1,5 @@
+import { CartProvider } from "../../context/CartContext"; // from app to context
+
 export default function ProductsLayout({
   children,
 }: {

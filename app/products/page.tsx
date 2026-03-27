@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useCart } from "../context/cartContext";
+import { useCart } from "../../context/CartContext";
 import { useRouter } from "next/navigation";
 
 export default function ProductsPage() {
@@ -17,7 +17,7 @@ export default function ProductsPage() {
         const data = await res.json();
         setProducts(data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching products:", error);
       } finally {
         setLoading(false);
       }
@@ -44,8 +44,22 @@ export default function ProductsPage() {
 function ProductCard({ product, addToCart, router }: any) {
   const [quantity, setQuantity] = useState(1);
 
-  // Navigate to product details page
   const goToDetails = () => router.push(`/products/${product.id}`);
+
+  /* ✅ Add to cart and navigate to /cart */
+  const handleAddToCart = () => {
+    addToCart(
+      {
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+      },
+      quantity,
+    );
+
+    router.push("/cart");
+  };
 
   return (
     <div className="border p-4 rounded flex flex-col items-center text-center">
@@ -92,10 +106,7 @@ function ProductCard({ product, addToCart, router }: any) {
       </div>
 
       {/* Add to Cart Button */}
-      <button
-        className="btn-primary w-full"
-        onClick={() => addToCart(product, quantity)}
-      >
+      <button className="btn-primary w-full" onClick={handleAddToCart}>
         Add to Cart
       </button>
     </div>

@@ -1,52 +1,41 @@
 "use client";
 
-import { useCart } from "../context/cartContext";
+import { useCart } from "../../context/CartContext";
 import { useRouter } from "next/navigation";
 
 export default function Checkout() {
-  const { cart, updateQuantity, clearCart } = useCart();
   const router = useRouter();
+  const { cart, updateQuantity, clearCart } = useCart();
 
-  // Total calculation
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  if (cart.length === 0)
+  if (cart.length === 0) {
     return (
       <div className="container py-16 text-center">
-        <h1 className="text-xl font-semibold">Your cart is empty</h1>
+        <h1>Your cart is empty</h1>
       </div>
     );
-
-  const handlePlaceOrder = () => {
-    alert("Order placed successfully!");
-    clearCart(); // Clear the cart
-    router.push("/"); // Redirect to home
-  };
+  }
 
   return (
     <div className="container py-10">
-      <h1 className="mb-8 text-2xl font-bold">Checkout</h1>
+      <h1 className="text-2xl font-bold mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 🧾 LEFT SIDE - Products */}
+        {/* LEFT: Cart items */}
         <div className="lg:col-span-2 space-y-6">
           {cart.map((item) => (
             <div
               key={item.id}
               className="flex items-center gap-4 border-b pb-4"
             >
-              {/* Product Image */}
               <img
                 src={item.image}
                 alt={item.title}
                 className="w-16 h-16 object-contain"
               />
-
-              {/* Product Info */}
               <div className="flex-1">
                 <p className="font-medium">{item.title}</p>
-
-                {/* Quantity Controls */}
                 <div className="flex items-center gap-2 mt-1">
                   <button
                     onClick={() =>
@@ -73,8 +62,6 @@ export default function Checkout() {
                   </button>
                 </div>
               </div>
-
-              {/* Price */}
               <p className="text-green-600 font-semibold">
                 ${(item.price * item.quantity).toFixed(2)}
               </p>
@@ -82,27 +69,29 @@ export default function Checkout() {
           ))}
         </div>
 
-        {/* 💳 RIGHT SIDE - Order Summary */}
-        <div className="card p-6 h-fit sticky top-20 space-y-4">
-          <h2 className="text-lg font-semibold">Order Summary</h2>
-
-          <div className="flex justify-between text-sm">
+        {/* RIGHT: Summary */}
+        <div className="card p-6 h-fit sticky top-20">
+          <h2 className="mb-4 font-semibold">Order Summary</h2>
+          <div className="flex justify-between mb-2">
             <span>Items</span>
             <span>{cart.length}</span>
           </div>
-
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between mb-2">
             <span>Shipping</span>
             <span className="text-green-600">Free</span>
           </div>
-
-          <div className="flex justify-between font-semibold text-lg">
+          <div className="flex justify-between mb-4 font-semibold">
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>
-
-          {/* Place Order Button */}
-          <button className="btn-primary w-full" onClick={handlePlaceOrder}>
+          <button
+            onClick={() => {
+              alert("Order placed successfully!");
+              clearCart();
+              router.push("/");
+            }}
+            className="btn-primary w-full"
+          >
             Place Order
           </button>
         </div>

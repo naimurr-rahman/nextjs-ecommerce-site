@@ -1,19 +1,17 @@
 "use client";
 
-import { useEffect, useState, use, useRef } from "react";
-import { useCart } from "../../context/cartContext";
+import { useEffect, useState, useRef, use } from "react";
+import { useCart } from "../../../context/CartContext";
+import { useRouter } from "next/navigation";
 
-/* ✅ Product type */
-type Product = {
+/* ✅ API Product type */
+type ApiProduct = {
   id: number;
   title: string;
   price: number;
   description: string;
   image: string;
-  rating?: {
-    rate: number;
-    count: number;
-  };
+  rating?: { rate: number; count: number };
 };
 
 export default function ProductDetails({
@@ -23,9 +21,10 @@ export default function ProductDetails({
 }) {
   const { id } = use(params);
   const { addToCart } = useCart();
+  const router = useRouter();
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [moreProducts, setMoreProducts] = useState<Product[]>([]);
+  const [product, setProduct] = useState<ApiProduct | null>(null);
+  const [moreProducts, setMoreProducts] = useState<ApiProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [animate, setAnimate] = useState(false);
   const flyingImgRef = useRef<HTMLImageElement>(null);
@@ -35,10 +34,10 @@ export default function ProductDetails({
     const fetchProduct = async () => {
       try {
         const res = await fetch(`https://fakestoreapi.com/products/${id}`);
-        const data: Product = await res.json();
+        const data: ApiProduct = await res.json();
         setProduct(data);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching product:", err);
       }
     };
     fetchProduct();
@@ -49,10 +48,10 @@ export default function ProductDetails({
     const fetchMore = async () => {
       try {
         const res = await fetch("https://fakestoreapi.com/products");
-        const data: Product[] = await res.json();
+        const data: ApiProduct[] = await res.json();
         setMoreProducts(data.filter((p) => p.id !== Number(id)).slice(0, 10));
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching more products:", err);
       } finally {
         setLoading(false);
       }
@@ -60,11 +59,23 @@ export default function ProductDetails({
     fetchMore();
   }, [id]);
 
-  /* Handle Add to Cart animation */
-  const handleAddToCart = (p: Product) => {
-    addToCart(p);
+  /* ✅ Handle Add to Cart and navigate to /cart */
+  const handleAddToCart = (p: ApiProduct) => {
+    addToCart(
+      {
+        id: p.id,
+        title: p.title,
+        price: p.price,
+        image: p.image,
+      },
+      1,
+    );
+
     setAnimate(true);
     setTimeout(() => setAnimate(false), 800);
+
+    // Navigate to cart page after adding
+    router.push("/cart");
   };
 
   if (!product) {
@@ -86,8 +97,6 @@ export default function ProductDetails({
             alt={product.title}
             className="max-h-80 object-contain hover:scale-105 transition duration-300"
           />
-
-          {/* Flying image animation */}
           {animate && (
             <img
               ref={flyingImgRef}
@@ -100,21 +109,17 @@ export default function ProductDetails({
         {/* Details */}
         <div>
           <h1 className="text-2xl font-bold mb-4">{product.title}</h1>
-
           <p className="text-green-600 text-2xl font-semibold mb-4">
             ${product.price}
           </p>
-
           <p className="text-gray-600 mb-6 leading-relaxed">
             {product.description}
           </p>
-
           {product.rating && (
             <p className="text-sm text-gray-500 mb-6">
               ⭐ {product.rating.rate} ({product.rating.count} reviews)
             </p>
           )}
-
           <button
             onClick={() => handleAddToCart(product)}
             className="btn-primary w-full sm:w-auto mb-6 relative overflow-hidden"
@@ -124,12 +129,11 @@ export default function ProductDetails({
         </div>
       </div>
 
-      {/* More Products Carousel */}
+      {/* More Products */}
       <div>
         <h2 className="text-xl font-semibold mb-4 text-center">
           You may also like
         </h2>
-
         {loading ? (
           <p className="text-center py-10">Loading more products...</p>
         ) : (
@@ -143,18 +147,18 @@ export default function ProductDetails({
                   src={p.image}
                   alt={p.title}
                   className="h-36 object-contain mb-2 cursor-pointer hover:scale-105 transition-transform"
-                  onClick={() => (window.location.href = `/products/${p.id}`)}
+                  onClick={() => router.push(`/products/${p.id}`)}
                 />
                 <h3
                   className="text-sm font-medium line-clamp-2 cursor-pointer mb-1"
-                  onClick={() => (window.location.href = `/products/${p.id}`)}
+                  onClick={() => router.push(`/products/${p.id}`)}
                 >
                   {p.title}
                 </h3>
                 <p className="text-green-600 font-semibold mb-2">${p.price}</p>
                 <button
                   className="btn-primary w-full"
-                  onClick={() => (window.location.href = `/products/${p.id}`)}
+                  onClick={() => handleAddToCart(p)}
                 >
                   Add to Cart
                 </button>
@@ -164,7 +168,7 @@ export default function ProductDetails({
         )}
       </div>
 
-      {/* Tailwind animation */}
+      {/* Fly to cart animation */}
       <style jsx>{`
         @keyframes fly-to-cart {
           0% {
