@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { useRouter } from "next/navigation";
+import { getProducts } from "@/lib/api";
 
 export default function ProductsPage() {
   const { addToCart } = useCart();
@@ -11,18 +12,21 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const loadProducts = async () => {
       try {
-        const res = await fetch("https://fakestoreapi.com/products");
-        const data = await res.json();
-        setProducts(data);
+        setLoading(true);
+
+        const data = await getProducts(); // ✅ using lib/api.ts
+        setProducts(data); // ✅ set products state
       } catch (error) {
         console.error("Error fetching products:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+
+    loadProducts();
   }, []);
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
@@ -53,7 +57,7 @@ function ProductCard({ product, addToCart, router }: any) {
         id: product.id,
         title: product.title,
         price: product.price,
-        image: product.image,
+        image: product.thumbnail,
       },
       quantity,
     );
@@ -65,7 +69,7 @@ function ProductCard({ product, addToCart, router }: any) {
     <div className="border p-4 rounded flex flex-col items-center text-center">
       {/* Clickable Image */}
       <img
-        src={product.image}
+        src={product.thumbnail}
         alt={product.title}
         className="h-48 object-contain mb-2 cursor-pointer"
         onClick={goToDetails}

@@ -1,7 +1,7 @@
 // lib/api.ts
 export async function getProducts() {
   try {
-    const res = await fetch("https://fakestoreapi.com/products", {
+    const res = await fetch("https://dummyjson.com/products", {
       cache: "no-store", // always fetch fresh data
     });
 
@@ -10,7 +10,7 @@ export async function getProducts() {
     }
 
     const data = await res.json();
-    return data;
+    return data.products; // return the products array
   } catch (error) {
     console.error("Error fetching products:", error);
     return []; // return empty array instead of crashing

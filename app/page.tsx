@@ -7,7 +7,7 @@ type Product = {
   id: number;
   title: string;
   price: number;
-  image: string;
+  thumbnail: string;
 };
 
 export default function Home() {
@@ -15,11 +15,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((data: Product[]) => setProducts(data))
-      .finally(() => setLoading(false));
-  }, []);
+  fetch("https://dummyjson.com/products")
+    .then((res) => res.json())
+    .then((data) => setProducts(data.products)) // ✅ FIXED
+    .finally(() => setLoading(false));
+}, []);
 
   if (loading)
     return <div className="container py-10 text-center">Loading...</div>;
@@ -35,7 +35,7 @@ export default function Home() {
           >
             <Link href={`/products/${p.id}`}>
               <img
-                src={p.image}
+                src={p.thumbnail}
                 alt={p.title}
                 className="h-40 object-contain mb-2 cursor-pointer"
               />
