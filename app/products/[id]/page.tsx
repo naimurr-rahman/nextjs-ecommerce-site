@@ -4,13 +4,14 @@ import { useEffect, useState, useRef, use } from "react";
 import { useCart } from "../../../context/CartContext";
 import { useRouter } from "next/navigation";
 
+
 /* ✅ API Product type */
 type ApiProduct = {
   id: number;
   title: string;
   price: number;
   description: string;
-  image: string;
+  thumbnail: string;
   rating?: { rate: number; count: number };
 };
 
@@ -33,7 +34,7 @@ export default function ProductDetails({
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+        const res = await fetch(`https://dummyjson.com/products/${id}`);
         const data: ApiProduct = await res.json();
         setProduct(data);
       } catch (err) {
@@ -47,8 +48,8 @@ export default function ProductDetails({
   useEffect(() => {
     const fetchMore = async () => {
       try {
-        const res = await fetch("https://fakestoreapi.com/products");
-        const data: ApiProduct[] = await res.json();
+        const res = await fetch("https://dummyjson.com/products");
+        const data: ApiProduct[] = await res.json().then((d) => d.products);
         setMoreProducts(data.filter((p) => p.id !== Number(id)).slice(0, 10));
       } catch (err) {
         console.error("Error fetching more products:", err);
@@ -66,7 +67,7 @@ export default function ProductDetails({
         id: p.id,
         title: p.title,
         price: p.price,
-        image: p.image,
+        image: p.thumbnail,
       },
       1,
     );
@@ -93,14 +94,14 @@ export default function ProductDetails({
         {/* Image */}
         <div className="bg-white p-6 rounded-xl shadow-sm flex justify-center items-center relative">
           <img
-            src={product.image}
+            src={product.thumbnail}
             alt={product.title}
             className="max-h-80 object-contain hover:scale-105 transition duration-300"
           />
           {animate && (
             <img
               ref={flyingImgRef}
-              src={product.image}
+              src={product.thumbnail}
               className="absolute top-0 left-0 w-20 h-20 object-contain animate-fly-to-cart"
             />
           )}
@@ -141,10 +142,10 @@ export default function ProductDetails({
             {moreProducts.map((p) => (
               <div
                 key={p.id}
-                className="flex-shrink-0 w-56 border rounded p-4 flex flex-col items-center text-center hover:shadow-lg transition snap-start"
+                className="shrink-0 w-56 border rounded p-4 flex flex-col items-center text-center hover:shadow-lg transition snap-start"
               >
                 <img
-                  src={p.image}
+                  src={p.thumbnail}
                   alt={p.title}
                   className="h-36 object-contain mb-2 cursor-pointer hover:scale-105 transition-transform"
                   onClick={() => router.push(`/products/${p.id}`)}
