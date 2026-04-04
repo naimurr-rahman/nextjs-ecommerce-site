@@ -84,7 +84,7 @@ export default function Home() {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.slice(0, 8).map((p) => (
+          {products.slice(0, 20).map((p) => (
             <div
               key={p.id}
               className="group border rounded-xl overflow-hidden hover:shadow-lg transition bg-white"
