@@ -26,7 +26,6 @@ export default function Home() {
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-
       {/* 🔥 HERO / SPACE */}
       <div className="h-30" />
 
@@ -38,7 +37,6 @@ export default function Home() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           {/* LEFT BIG IMAGE */}
           <div className="relative group overflow-hidden rounded-xl">
             <img
@@ -102,9 +100,7 @@ export default function Home() {
                   <h3 className="text-sm font-medium line-clamp-2 mb-1">
                     {p.title}
                   </h3>
-                  <p className="text-green-600 font-semibold">
-                    ${p.price}
-                  </p>
+                  <p className="text-green-600 font-semibold">${p.price}</p>
                 </div>
               </Link>
             </div>

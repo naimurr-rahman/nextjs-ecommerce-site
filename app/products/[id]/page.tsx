@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, use } from "react";
 import { useCart } from "../../../context/CartContext";
 import { useRouter } from "next/navigation";
 
-
 /* ✅ API Product type */
 type ApiProduct = {
   id: number;

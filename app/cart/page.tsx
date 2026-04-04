@@ -24,13 +24,18 @@ export default function Cart() {
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  /* ================= EMPTY STATE ================= */
   if (cart.length === 0) {
     return (
-      <div className="container py-16 text-center">
-        <h1 className="mb-4">Your cart is empty</h1>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-2xl font-semibold mb-2">Your cart is empty</h1>
+        <p className="text-gray-500 mb-6">
+          Looks like you haven’t added anything yet.
+        </p>
+
         <button
           onClick={() => router.push("/products")}
-          className="btn-primary"
+          className="px-6 py-3 bg-black text-white rounded-xl hover:opacity-90 transition"
         >
           Continue Shopping
         </button>
@@ -38,47 +43,55 @@ export default function Cart() {
     );
   }
 
+  /* ================= MAIN UI ================= */
   return (
-    <div className="container py-10">
-      <h1 className="mb-8">Shopping Cart</h1>
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      <h1 className="text-3xl font-bold mb-10">Shopping Cart</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 🛍️ LEFT SIDE */}
-        <div className="lg:col-span-2 space-y-4">
+      <div className="grid lg:grid-cols-3 gap-10">
+        {/* LEFT SIDE */}
+        <div className="lg:col-span-2 space-y-5">
           {cart.map((item) => (
-            <div key={item.id} className="card p-4 flex gap-4 items-center">
+            <div
+              key={item.id}
+              className="flex items-center gap-5 bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition"
+            >
               {/* IMAGE */}
-              <img src={item.image} className="w-20 h-20 object-contain" />
+              <div className="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center">
+                <img src={item.image} className="w-16 h-16 object-contain" />
+              </div>
 
               {/* DETAILS */}
               <div className="flex-1">
-                <p className="text-sm font-medium line-clamp-2">{item.title}</p>
+                <p className="font-medium text-gray-800 line-clamp-2">
+                  {item.title}
+                </p>
 
-                <p className="text-green-600 font-semibold mt-1">
+                <p className="text-lg font-semibold text-black mt-2">
                   ${item.price}
                 </p>
               </div>
 
-              {/* QUANTITY */}
-              <div className="flex items-center border rounded">
+              {/* QUANTITY CONTROL */}
+              <div className="flex items-center bg-gray-100 rounded-xl overflow-hidden">
                 <button
                   onClick={() => {
                     updateQuantity(item.id, "dec");
                     loadCart();
                   }}
-                  className="px-3 py-1"
+                  className="px-3 py-2 hover:bg-gray-200 transition"
                 >
                   −
                 </button>
 
-                <span className="px-3">{item.quantity}</span>
+                <span className="px-4 font-medium">{item.quantity}</span>
 
                 <button
                   onClick={() => {
                     updateQuantity(item.id, "inc");
                     loadCart();
                   }}
-                  className="px-3 py-1"
+                  className="px-3 py-2 hover:bg-gray-200 transition"
                 >
                   +
                 </button>
@@ -90,7 +103,7 @@ export default function Cart() {
                   removeFromCart(item.id);
                   loadCart();
                 }}
-                className="text-red-500 text-sm"
+                className="text-sm text-red-500 hover:underline"
               >
                 Remove
               </button>
@@ -98,25 +111,39 @@ export default function Cart() {
           ))}
         </div>
 
-        {/* 💳 RIGHT SIDE (SUMMARY) */}
-        <div className="card p-6 h-fit sticky top-20">
-          <h2 className="mb-4">Order Summary</h2>
+        {/* RIGHT SIDE */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm sticky top-24 h-fit">
+          <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
 
-          <div className="flex justify-between mb-2 text-sm">
-            <span>Items</span>
-            <span>{cart.length}</span>
+          <div className="space-y-3 text-sm text-gray-600">
+            <div className="flex justify-between">
+              <span>Items</span>
+              <span>{cart.length}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Shipping</span>
+              <span className="text-green-600">Free</span>
+            </div>
           </div>
 
-          <div className="flex justify-between mb-4 text-sm">
+          <div className="border-t my-5" />
+
+          <div className="flex justify-between text-lg font-semibold mb-6">
             <span>Total</span>
-            <span className="font-semibold">${total.toFixed(2)}</span>
+            <span>${total.toFixed(2)}</span>
           </div>
 
           <button
             onClick={() => router.push("/checkout")}
-            className="btn-primary w-full"
+            className="w-full py-3 bg-black text-white rounded-xl font-medium hover:opacity-90 transition"
           >
-            Checkout
+            Proceed to Checkout
           </button>
         </div>
       </div>
