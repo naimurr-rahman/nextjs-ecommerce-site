@@ -25,9 +25,6 @@ export default function Navbar() {
           <Link href="/cart" className="hover:text-gray-500">
             Cart
           </Link>
-          <Link href="/login" className="hover:text-gray-500">
-            Login
-          </Link>
         </div>
       </div>
 
@@ -36,7 +33,6 @@ export default function Navbar() {
           <Link href="/">Home</Link>
           <Link href="/products">Products</Link>
           <Link href="/cart">Cart</Link>
-          <Link href="/login">Login</Link>
         </div>
       )}
     </nav>
